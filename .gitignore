@@ -1,0 +1,17 @@
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Generated database
+data/*.db
+
+# Airflow generated files
+airflow/logs/
+airflow/*.db
+
+# OS / editor files
+.DS_Store
+Thumbs.db
