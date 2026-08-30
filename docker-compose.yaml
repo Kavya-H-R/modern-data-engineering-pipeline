@@ -1,6 +1,6 @@
 services:
   airflow:
-    image: apache/airflow:3.3.1-python3.12
+    build: .
     container_name: sales-airflow
     command: standalone
     working_dir: /opt/airflow/project
@@ -10,9 +10,33 @@ services:
 
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./src:/opt/airflow/project/src
       - ./data:/opt/airflow/project/data
       - ./sql:/opt/airflow/project/sql
+      - ./dbt_project:/opt/airflow/project/dbt_project
+
+  postgres:
+    image: postgres:17
+    container_name: sales-postgres
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

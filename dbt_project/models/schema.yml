@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: customer_sales_summary
+    description: "Aggregated customer-level sales summary."
+
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+      - name: total_spent
+        tests:
+          - not_null

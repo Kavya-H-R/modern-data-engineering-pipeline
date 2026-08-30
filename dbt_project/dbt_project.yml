@@ -1,0 +1,10 @@
+name: "sales_dbt"
+version: "1.0.0"
+
+profile: "sales_postgres"
+
+model-paths: ["models"]
+
+models:
+  sales_dbt:
+    +materialized: table

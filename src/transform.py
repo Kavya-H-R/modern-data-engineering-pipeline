@@ -34,4 +34,9 @@ transformed_df = sales_df.withColumn(
 print("Transformed Sales Data:")
 transformed_df.show()
 
+transformed_df.coalesce(1).write \
+    .mode("overwrite") \
+    .option("header", True) \
+    .csv("data/transformed_sales")
+
 spark.stop()

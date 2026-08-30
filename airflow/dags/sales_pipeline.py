@@ -18,14 +18,32 @@ with DAG(
         bash_command="cd /opt/airflow/project && python src/validate.py",
     )
 
+    spark_transform = BashOperator(
+        task_id="spark_transform",
+        bash_command="cd /opt/airflow/project && python src/transform.py",
+    )
+
     load_database = BashOperator(
         task_id="load_database",
-        bash_command="cd /opt/airflow/project && python src/load_sqlite.py",
+        bash_command="cd /opt/airflow/project && python src/load_postgres.py",
     )
 
-    run_sql = BashOperator(
-        task_id="run_sql",
-        bash_command="cd /opt/airflow/project && python src/run_sql.py",
+    dbt_run = BashOperator(
+        task_id="dbt_run",
+        bash_command="""
+        dbt run \
+        --project-dir /opt/airflow/project/dbt_project \
+        --profiles-dir /opt/airflow/project/dbt_project
+        """,
     )
 
-    validate_file >> load_database >> run_sql
+    dbt_test = BashOperator(
+        task_id="dbt_test",
+        bash_command="""
+        dbt test \
+        --project-dir /opt/airflow/project/dbt_project \
+        --profiles-dir /opt/airflow/project/dbt_project
+        """,
+    )
+
+    validate_file >> spark_transform >> load_database >> dbt_run >> dbt_test
