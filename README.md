@@ -1,2 +1,1 @@
-# modern-data-engineering-pipeline
-Production-style data engineering pipeline demonstrating data ingestion, transformation, validation, orchestration, and warehousing using Python, PySpark, SQL, Snowflake, dbt, Airflow, and AWS.
+Production-style data engineering pipeline using Python, PySpark, PostgreSQL, dbt, Airflow, and Docker with data validation and orchestration.
