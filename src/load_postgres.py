@@ -38,7 +38,7 @@ cursor = connection.cursor()
 # Create table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS sales (
-    order_id INTEGER,
+    order_id INTEGER PRIMARY KEY,
     customer_id INTEGER,
     product VARCHAR(100),
     quantity INTEGER,
@@ -48,9 +48,6 @@ CREATE TABLE IF NOT EXISTS sales (
 )
 """)
 
-
-# Keep this tiny batch pipeline idempotent
-cursor.execute("DELETE FROM sales")
 
 
 # Load Spark-transformed data
@@ -69,6 +66,14 @@ with open(CSV_FILE, "r") as file:
                 total_amount
             )
             VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (order_id)
+            DO UPDATE SET
+                customer_id = EXCLUDED.customer_id,
+                product = EXCLUDED.product,
+                quantity = EXCLUDED.quantity,
+                price = EXCLUDED.price,
+                order_date = EXCLUDED.order_date,
+                total_amount = EXCLUDED.total_amount
         """, (
             int(row["order_id"]),
             int(row["customer_id"]),
